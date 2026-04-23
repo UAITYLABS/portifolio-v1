@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { waLink } from "@/lib/config";
+import { getDict, type Locale } from "@/lib/i18n";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-export function ContactForm() {
+export function ContactForm({ locale }: { locale: Locale }) {
+  const t = getDict(locale).cta.form;
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -34,14 +36,23 @@ export function ContactForm() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || "Falha ao enviar");
+        throw new Error(
+          body.error ||
+            (locale === "en" ? "Failed to send" : "Falha ao enviar")
+        );
       }
 
       setStatus("success");
       form.reset();
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Erro inesperado");
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : locale === "en"
+          ? "Unexpected error"
+          : "Erro inesperado"
+      );
     }
   }
 
@@ -57,12 +68,20 @@ export function ContactForm() {
     const tipo = String(data.get("tipo") || "");
     const msg = String(data.get("mensagem") || "");
 
+    const intro = locale === "en" ? "Hi! I'm" : "Olá! Sou";
+    const fromCompany = locale === "en" ? "from" : "da";
+    const interestedIn = locale === "en" ? "— interested in:" : "— interesse em:";
+    const source =
+      locale === "en"
+        ? "\n\nI came from UAITY | Software website."
+        : "\n\nVim pelo site UAITY | Software.";
+
     const parts = [
-      nome && `Olá! Sou *${nome}*`,
-      empresa && `da *${empresa}*`,
-      tipo && `— interesse em: ${tipo}.`,
+      nome && `${intro} *${nome}*`,
+      empresa && `${fromCompany} *${empresa}*`,
+      tipo && `${interestedIn} ${tipo}.`,
       msg && `\n${msg}`,
-      "\n\nVim pelo site UAITY | Software.",
+      source,
     ].filter(Boolean);
 
     window.open(waLink(parts.join(" ")), "_blank");
@@ -72,50 +91,57 @@ export function ContactForm() {
     <form id="contact-form" className="form" onSubmit={onSubmit} noValidate>
       <div className="form-row">
         <div className="field">
-          <label htmlFor="nome">Nome</label>
-          <input id="nome" name="nome" type="text" placeholder="Seu nome" required />
+          <label htmlFor="nome">{t.name}</label>
+          <input
+            id="nome"
+            name="nome"
+            type="text"
+            placeholder={t.namePlaceholder}
+            required
+          />
         </div>
         <div className="field">
-          <label htmlFor="empresa">Empresa</label>
-          <input id="empresa" name="empresa" type="text" placeholder="Nome da empresa" />
+          <label htmlFor="empresa">{t.company}</label>
+          <input
+            id="empresa"
+            name="empresa"
+            type="text"
+            placeholder={t.companyPlaceholder}
+          />
         </div>
       </div>
       <div className="field">
-        <label htmlFor="email">Email profissional</label>
+        <label htmlFor="email">{t.email}</label>
         <input
           id="email"
           name="email"
           type="email"
-          placeholder="voce@empresa.com"
+          placeholder={t.emailPlaceholder}
           required
         />
       </div>
       <div className="field">
-        <label htmlFor="tipo">Tipo de projeto</label>
+        <label htmlFor="tipo">{t.type}</label>
         <select id="tipo" name="tipo" required defaultValue="">
-          <option value="" disabled>Selecione...</option>
-          <option>Site / Landing Page</option>
-          <option>SaaS sob medida</option>
-          <option>Automação com IA</option>
-          <option>E-commerce</option>
-          <option>App mobile</option>
-          <option>Consultoria técnica</option>
-          <option>Outro</option>
+          <option value="" disabled>
+            {t.typePlaceholder}
+          </option>
+          {t.typeOptions.map((opt) => (
+            <option key={opt}>{opt}</option>
+          ))}
         </select>
       </div>
       <div className="field">
-        <label htmlFor="mensagem">Conta um pouco</label>
+        <label htmlFor="mensagem">{t.message}</label>
         <textarea
           id="mensagem"
           name="mensagem"
-          placeholder="O que você quer resolver? Qual o prazo ideal?"
+          placeholder={t.messagePlaceholder}
         />
       </div>
 
       {status === "success" && (
-        <div className="form-status success">
-          ✓ Mensagem recebida. Retornamos em até 24h úteis.
-        </div>
+        <div className="form-status success">{t.successMsg}</div>
       )}
       {status === "error" && (
         <div className="form-status error">✕ {errorMsg}</div>
@@ -126,7 +152,7 @@ export function ContactForm() {
         className="form-submit"
         disabled={status === "loading"}
       >
-        {status === "loading" ? "Enviando..." : "Enviar mensagem"}
+        {status === "loading" ? t.submitLoading : t.submit}
         {status !== "loading" && <ArrowRight size={16} />}
       </button>
 
@@ -141,10 +167,10 @@ export function ContactForm() {
           marginTop: 0,
         }}
       >
-        Preferir WhatsApp →
+        {t.whatsappAlt}
       </button>
 
-      <p className="form-legal">Seus dados estão seguros. Não enviamos spam.</p>
+      <p className="form-legal">{t.legal}</p>
     </form>
   );
 }

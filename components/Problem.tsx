@@ -1,19 +1,25 @@
 import { problems } from "@/lib/problems";
+import type { Locale } from "@/lib/i18n";
+import { getDict } from "@/lib/i18n";
 
-export function Problem() {
+export function Problem({ locale }: { locale: Locale }) {
+  const t = getDict(locale).problem;
+
   return (
     <section id="problema">
       <div className="container-uaity">
         <div className="section-head reveal">
-          <p className="eyebrow">— O cenário</p>
+          <p className="eyebrow">{t.eyebrow}</p>
           <h2>
-            Seu negócio está <em>parando</em> por coisas
-            <br />
-            que deviam estar automatizadas.
+            {t.titleBefore} <em>{t.titleEmphasis}</em>{" "}
+            {t.titleAfter.split("\n").map((line, i, arr) => (
+              <span key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
           </h2>
-          <p>
-            A diferença entre empresas que crescem e empresas que estagnam raramente está no time — está na infraestrutura digital. Estes são os gargalos mais comuns que a gente resolve:
-          </p>
+          <p>{t.intro}</p>
         </div>
 
         <div className="problem-grid">
@@ -21,8 +27,8 @@ export function Problem() {
             <div key={p.num} className="problem-card glass reveal">
               <div>
                 <div className="problem-icon">{p.num}</div>
-                <h3>{p.title}</h3>
-                <p>{p.description}</p>
+                <h3>{p.title[locale]}</h3>
+                <p>{p.description[locale]}</p>
               </div>
             </div>
           ))}

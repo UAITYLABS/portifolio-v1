@@ -1,5 +1,6 @@
 import { projects, type ProjectSize } from "@/lib/projects";
 import { waLink } from "@/lib/config";
+import { getDict, type Locale } from "@/lib/i18n";
 
 const sizeClass: Record<ProjectSize, string> = {
   wide: "case-wide",
@@ -7,20 +8,25 @@ const sizeClass: Record<ProjectSize, string> = {
   sm: "case-sm",
 };
 
-export function Cases() {
+export function Cases({ locale }: { locale: Locale }) {
+  const dict = getDict(locale);
+  const t = dict.cases;
+
   return (
     <section id="cases">
       <div className="container-uaity">
         <div className="section-head reveal">
-          <p className="eyebrow">— Cases reais</p>
+          <p className="eyebrow">{t.eyebrow}</p>
           <h2>
-            Projetos que <em>saíram do papel</em>
-            <br />
-            e estão rodando.
+            {t.titleBefore} <em>{t.titleEmphasis}</em>
+            {t.titleAfter.split("\n").map((line, i) => (
+              <span key={i}>
+                {i > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </h2>
-          <p>
-            De telemedicina com 150+ médicos a esports com campeonatos oficiais, de gráficas locais a plataformas com 40+ endpoints. Cada card é uma entrega completa, do escopo à operação.
-          </p>
+          <p>{t.intro}</p>
         </div>
 
         <div className="cases-grid">
@@ -42,35 +48,31 @@ export function Cases() {
               >
                 <div className="case-meta">
                   <span>
-                    {String(i + 1).padStart(2, "0")} · {p.category}
+                    {String(i + 1).padStart(2, "0")} · {p.category[locale]}
                   </span>
                   <span className="mono">{p.year}</span>
                 </div>
                 <div>
                   <h3>{p.name}</h3>
-                  <p className="case-desc">{p.description}</p>
+                  <p className="case-desc">{p.description[locale]}</p>
                   {p.results && p.results.length > 0 && (
                     <div className="case-results">
                       {p.results.map((r, idx) => (
                         <div key={idx} className="case-result">
                           <strong>{r.value}</strong>
-                          <span>{r.label}</span>
+                          <span>{r.label[locale]}</span>
                         </div>
                       ))}
                     </div>
                   )}
-                  {p.link && (
-                    <span className="case-visit">
-                      Visitar ↗
-                    </span>
-                  )}
+                  {p.link && <span className="case-visit">{t.visit}</span>}
                 </div>
               </CardTag>
             );
           })}
 
           <a
-            href={waLink("Olá! Vim pelo site da UAITY | Software e gostaria de conversar sobre um novo projeto.")}
+            href={waLink(dict.whatsapp.newProjectMessage)}
             target="_blank"
             rel="noopener noreferrer"
             className="case case-accent-blue glass case-wide case-cta-card reveal"
@@ -91,9 +93,10 @@ export function Cases() {
                 </svg>
               </div>
               <h3>
-                <em>Seu projeto</em> aqui.
+                <em>{t.ctaEmphasis}</em>
+                {locale === "en" ? " here." : " aqui."}
               </h3>
-              <p className="case-desc">Vamos conversar pelo WhatsApp.</p>
+              <p className="case-desc">{t.ctaSub}</p>
             </div>
           </a>
         </div>

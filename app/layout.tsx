@@ -1,49 +1,41 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { config } from "@/lib/config";
+import { detectLocale } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(config.brand.url),
-  title: {
-    default: `${config.brand.name} — ${config.brand.tagline}`,
-    template: `%s · ${config.brand.name}`,
-  },
-  description: config.brand.description,
   keywords: [
     "software house brasil",
+    "brazilian software house",
     "desenvolvimento web",
+    "web development",
     "SaaS sob medida",
-    "automação IA",
+    "custom SaaS",
+    "automação",
+    "automation",
     "Next.js",
     "React",
     "UAITY",
   ],
   authors: [{ name: "UAITY", url: config.brand.mainSite }],
   creator: "UAITY",
-  openGraph: {
-    type: "website",
-    locale: "pt_BR",
-    url: config.brand.url,
-    title: `${config.brand.name} — ${config.brand.tagline}`,
-    description: config.brand.description,
-    siteName: config.brand.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${config.brand.name} — ${config.brand.tagline}`,
-    description: config.brand.description,
-  },
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const h = await headers();
+  const locale = detectLocale(h.get("accept-language"));
+  const htmlLang = locale === "en" ? "en" : "pt-BR";
+
   return (
     <html
-      lang="pt-BR"
+      lang={htmlLang}
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <body>{children}</body>

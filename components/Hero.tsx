@@ -1,77 +1,54 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { config } from "@/lib/config";
+import type { Locale } from "@/lib/i18n";
+import { getDict } from "@/lib/i18n";
 
-export function Hero() {
+export function Hero({ locale }: { locale: Locale }) {
+  const t = getDict(locale).hero;
+  const base = locale === "en" ? "/en" : "";
+
   return (
     <section className="hero">
       <div className="container-uaity">
         <div className="hero-tag glass">
           <span className="dot" aria-hidden="true" />
-          {config.status.acceptingProjects
-            ? `Aceitando novos projetos — ${config.status.availableFrom}`
-            : "Lista de espera aberta"}
+          {t.statusAccepting}
         </div>
 
         <h1 className="hero-title display">
-          Construímos
+          {t.title[0]}
           <br />
-          <em>software</em>
+          <em>{t.titleEmphasis}</em>
           <br />
-          <span className="plain">que gera receita.</span>
+          <span className="plain">{t.title[2]}</span>
         </h1>
 
-        <p className="hero-sub">
-          Somos uma software house brasileira que transforma processos manuais em produtos digitais lucrativos. Sites, SaaS, automações com IA — do briefing à operação.
-        </p>
+        <p className="hero-sub">{t.sub}</p>
 
         <div className="hero-actions">
-          <Link href="#contato" className="btn btn-primary">
-            Iniciar um projeto
+          <Link href={`${base}#contato`} className="btn btn-primary">
+            {t.ctaPrimary}
             <ArrowRight size={16} />
           </Link>
-          <Link href="#cases" className="btn btn-ghost">
-            Ver cases reais
+          <Link href={`${base}#cases`} className="btn btn-ghost">
+            {t.ctaSecondary}
           </Link>
         </div>
 
         <div className="hero-stats">
-          <div className="stat glass">
-            <div className="stat-num">
-              40<span className="plus">+</span>
+          {t.stats.map((s, i) => (
+            <div key={i} className="stat glass">
+              <div className="stat-num">
+                {s.num}
+                {s.plus && <span className="plus">{s.plus}</span>}
+              </div>
+              <div className="stat-label">
+                {s.label1}
+                <br />
+                {s.label2}
+              </div>
             </div>
-            <div className="stat-label">
-              endpoints em produção
-              <br />— GeoExpansão
-            </div>
-          </div>
-          <div className="stat glass">
-            <div className="stat-num">
-              30<span className="plus">+</span>
-            </div>
-            <div className="stat-label">
-              módulos de análise
-              <br />— Clyra Health OS
-            </div>
-          </div>
-          <div className="stat glass">
-            <div className="stat-num">
-              15<span className="plus">+</span>
-            </div>
-            <div className="stat-label">
-              projetos em produção
-              <br />— portfólio UAITY
-            </div>
-          </div>
-          <div className="stat glass">
-            <div className="stat-num">
-              96<span className="plus">/83</span>
-            </div>
-            <div className="stat-label">
-              Lighthouse desktop/mobile
-              <br />— média dos cases
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

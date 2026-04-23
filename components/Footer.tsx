@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { config } from "@/lib/config";
+import { getDict, type Locale } from "@/lib/i18n";
 
-export function Footer() {
+export function Footer({ locale }: { locale: Locale }) {
+  const t = getDict(locale).footer;
+  const base = locale === "en" ? "/en" : "";
+
+  const companyLinks = ["#cases", "#processo", "#contato", config.brand.mainSite];
+
   return (
     <footer className="footer">
       <div className="container-uaity">
@@ -12,48 +18,47 @@ export function Footer() {
               <span className="pipe">|</span>
               <span className="soft">software</span>
             </div>
-            <p>
-              Software house brasileira. Construímos sites, SaaS e automações que geram receita pra empresas que querem crescer.
-            </p>
+            <p>{t.description}</p>
           </div>
 
           <div className="footer-col">
-            <h5>Serviços</h5>
+            <h5>{t.columns.services.title}</h5>
             <ul>
-              <li><Link href="#servicos">Sites</Link></li>
-              <li><Link href="#servicos">SaaS sob medida</Link></li>
-              <li><Link href="#servicos">Automação IA</Link></li>
-              <li><Link href="#servicos">Consultoria</Link></li>
+              {t.columns.services.items.map((item, i) => (
+                <li key={i}>
+                  <Link href={`${base}#servicos`}>{item}</Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="footer-col">
-            <h5>Plataformas</h5>
+            <h5>{t.columns.company.title}</h5>
             <ul>
-              <li><Link href="#produtos">GeoExpansão</Link></li>
-              <li><Link href="#produtos">Clyra</Link></li>
-              <li><Link href="#produtos">ClubMed</Link></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <h5>Empresa</h5>
-            <ul>
-              <li><Link href="#cases">Cases</Link></li>
-              <li><Link href="#processo">Processo</Link></li>
-              <li><Link href="#contato">Contato</Link></li>
-              <li>
-                <a href={config.brand.mainSite} target="_blank" rel="noopener noreferrer">
-                  uaity.com
-                </a>
-              </li>
+              {t.columns.company.items.map((item, i) => {
+                const href = companyLinks[i] ?? "#";
+                const isExternal = href.startsWith("http");
+                return (
+                  <li key={i}>
+                    {isExternal ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer">
+                        {item}
+                      </a>
+                    ) : (
+                      <Link href={`${base}${href}`}>{item}</Link>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} {config.brand.name}. Todos os direitos reservados.</span>
-          <span>Feito em {config.brand.location}</span>
+          <span>
+            © {new Date().getFullYear()} {config.brand.name}. {t.rights}
+          </span>
+          <span>{t.madeIn}</span>
         </div>
       </div>
     </footer>

@@ -1,17 +1,23 @@
-export function Products() {
+import { getDict, type Locale } from "@/lib/i18n";
+
+export function Products({ locale }: { locale: Locale }) {
+  const t = getDict(locale).products;
+
   return (
     <section id="produtos">
       <div className="container-uaity">
         <div className="section-head reveal">
-          <p className="eyebrow">— Plataformas em destaque</p>
+          <p className="eyebrow">{t.eyebrow}</p>
           <h2>
-            Três projetos que mostram a <em>profundidade</em>
-            <br />
-            técnica da UAITY.
+            {t.titleBefore} <em>{t.titleEmphasis}</em>
+            {t.titleAfter.split("\n").map((line, i) => (
+              <span key={i}>
+                {i > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </h2>
-          <p>
-            Do nosso laboratório de produtos às parcerias de longo prazo — plataformas em operação que representam o nosso padrão de engenharia.
-          </p>
+          <p>{t.intro}</p>
         </div>
 
         {/* GeoExpansão */}
@@ -25,19 +31,18 @@ export function Products() {
                   boxShadow: "0 0 10px var(--uaity-blue-glow)",
                 }}
               />
-              Plataforma geo · em produção
+              {t.items.geo.badge}
             </div>
             <h3 className="grad-geo">GeoExpansão</h3>
             <p className="product-tagline">
-              Inteligência geográfica para quem precisa decidir <em>onde</em> abrir a próxima loja, franquia ou ponto.
+              {t.items.geo.tagline} <em>{t.items.geo.taglineEmphasis}</em> {t.items.geo.taglineAfter}
             </p>
             <ul className="product-features">
-              <li>Análise de 40+ indicadores por município</li>
-              <li>Persona, concorrência, fornecedores, vetores de crescimento</li>
-              <li>Relatório PDF completo de 15 a 20 páginas</li>
-              <li>Radar de alertas e API pública com keys</li>
+              {t.items.geo.features.map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
             </ul>
-            <a href="#contato" className="product-cta">Conhecer →</a>
+            <a href="#contato" className="product-cta">{locale === "en" ? "Learn more →" : "Conhecer →"}</a>
           </div>
           <div className="product-visual">
             <div className="geo-viz" />
@@ -58,19 +63,16 @@ export function Products() {
                   boxShadow: "0 0 10px var(--magenta)",
                 }}
               />
-              Health OS · em produção
+              {t.items.clyra.badge}
             </div>
             <h3 className="grad-clyra">Clyra</h3>
-            <p className="product-tagline">
-              Sistema operacional para clínicas e consultórios — do agendamento ao faturamento, com IA embutida.
-            </p>
+            <p className="product-tagline">{t.items.clyra.tagline}</p>
             <ul className="product-features">
-              <li>Agenda, prontuário, receituário, agendamento online</li>
-              <li>Agente WhatsApp com IA (Claude) — atende e agenda sozinho</li>
-              <li>Analytics: receita, funil, no-show, churn</li>
-              <li>Multi-tenant, LGPD, integração Asaas/Stripe</li>
+              {t.items.clyra.features.map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
             </ul>
-            <a href="#contato" className="product-cta">Conhecer →</a>
+            <a href="#contato" className="product-cta">{locale === "en" ? "Learn more →" : "Conhecer →"}</a>
           </div>
           <div className="product-visual">
             <div className="clyra-viz">
@@ -95,17 +97,16 @@ export function Products() {
                   boxShadow: "0 0 10px var(--mint)",
                 }}
               />
-              Telemedicina · plataforma viva
+              {t.items.clubmed.badge}
             </div>
             <h3 className="grad-clubmed">ClubMed</h3>
             <p className="product-tagline">
-              Plataforma de telemedicina e marketplace de saúde que conecta pacientes a especialistas em <em>todo o Brasil</em>.
+              {t.items.clubmed.tagline} <em>{t.items.clubmed.taglineEmphasis}</em>{t.items.clubmed.taglineAfter}
             </p>
             <ul className="product-features">
-              <li>Marketplace de médicos com agenda e avaliações</li>
-              <li>Consultas por vídeo + prescrição digital</li>
-              <li>Solicitação de exames integrada ao atendimento</li>
-              <li>Dashboards administrativos e financeiro</li>
+              {t.items.clubmed.features.map((f, i) => (
+                <li key={i}>{f}</li>
+              ))}
             </ul>
             <a
               href="https://www.clubmed.digital/"
@@ -113,7 +114,7 @@ export function Products() {
               rel="noopener noreferrer"
               className="product-cta"
             >
-              Visitar ↗
+              {t.visit}
             </a>
           </div>
           <div className="product-visual">
@@ -130,7 +131,6 @@ export function Products() {
                   </linearGradient>
                 </defs>
 
-                {/* Network of connections */}
                 <g stroke="url(#cm-line)" strokeWidth="1" fill="none" opacity="0.65">
                   <line x1="60" y1="55" x2="150" y2="100" />
                   <line x1="150" y1="100" x2="240" y2="60" />
@@ -140,7 +140,6 @@ export function Products() {
                   <line x1="240" y1="60" x2="230" y2="155" />
                 </g>
 
-                {/* Neon pulse rings — expanding behind each node */}
                 <g fill="none" strokeWidth="1">
                   <circle cx="60" cy="55" stroke="#34D399">
                     <animate attributeName="r" values="12;40" dur="2.4s" repeatCount="indefinite" />
@@ -164,7 +163,6 @@ export function Products() {
                   </circle>
                 </g>
 
-                {/* Patients (mint, with neon glow) */}
                 <g fill="#34D399">
                   <use href="#cm-person" x="46" y="41" width="28" height="28" className="cm-person cm-p1" />
                   <use href="#cm-person" x="226" y="46" width="28" height="28" className="cm-person cm-p2" />
@@ -172,7 +170,6 @@ export function Products() {
                   <use href="#cm-person" x="216" y="141" width="28" height="28" className="cm-person cm-p4" />
                 </g>
 
-                {/* Doctor / hub (coral, bigger, stronger glow) */}
                 <g fill="#FB923C">
                   <use href="#cm-person" x="128" y="78" width="44" height="44" className="cm-person cm-hub" />
                 </g>

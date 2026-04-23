@@ -1,22 +1,23 @@
 import { Mail, MessageCircle, Clock } from "lucide-react";
 import { config, waLink } from "@/lib/config";
+import { getDict, type Locale } from "@/lib/i18n";
 import { ContactForm } from "./ContactForm";
 
-export function Cta() {
+export function Cta({ locale }: { locale: Locale }) {
+  const t = getDict(locale).cta;
+
   return (
     <section id="contato">
       <div className="container-uaity">
         <div className="cta-wrap glass glass-heavy reveal">
           <div className="cta-left">
-            <p className="eyebrow">— Pronto pra começar?</p>
+            <p className="eyebrow">{t.eyebrow}</p>
             <h2>
-              Fale com a gente.
+              {t.titleBefore}
               <br />
-              <em>Sem compromisso.</em>
+              <em>{t.titleEmphasis}</em>
             </h2>
-            <p>
-              Descreva em uma linha o que te trouxe aqui. A gente responde em até 1 dia útil com próximos passos concretos — ou te direciona pra alguém que resolva melhor, se for o caso.
-            </p>
+            <p>{t.intro}</p>
 
             <div className="cta-contacts">
               <a href={`mailto:${config.contact.email}`} className="cta-contact">
@@ -34,18 +35,18 @@ export function Cta() {
                 <div className="cta-contact-glyph">
                   <MessageCircle size={16} />
                 </div>
-                WhatsApp — {config.contact.whatsapp.display}
+                {t.contactWhatsapp} — {config.contact.whatsapp.display}
               </a>
               <div className="cta-contact">
                 <div className="cta-contact-glyph">
                   <Clock size={16} />
                 </div>
-                Retorno em até 24h úteis
+                {t.contactTime}
               </div>
             </div>
           </div>
 
-          <ContactForm />
+          <ContactForm locale={locale} />
         </div>
       </div>
     </section>

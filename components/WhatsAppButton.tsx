@@ -1,13 +1,20 @@
 import { config, waLink } from "@/lib/config";
+import { getDict, type Locale } from "@/lib/i18n";
 
-export function WhatsAppButton() {
+export function WhatsAppButton({ locale }: { locale: Locale }) {
+  const dict = getDict(locale);
+  const ariaLabel =
+    locale === "en"
+      ? `Chat via WhatsApp — ${config.contact.whatsapp.display}`
+      : `Conversar pelo WhatsApp — ${config.contact.whatsapp.display}`;
+
   return (
     <a
-      href={waLink()}
+      href={waLink(dict.whatsapp.defaultMessage)}
       target="_blank"
       rel="noopener noreferrer"
       className="wa-float"
-      aria-label={`Conversar pelo WhatsApp — ${config.contact.whatsapp.display}`}
+      aria-label={ariaLabel}
     >
       <svg
         className="wa-float-icon"
