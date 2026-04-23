@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UAITY | Software
 
-## Getting Started
+Portfólio web do braço de demanda/serviços da UAITY. Lead generation para projetos B2B de software sob medida.
 
-First, run the development server:
+**Stack:** Next.js 16 · React 19 · TypeScript · Tailwind 4 · Resend · Lucide
+
+---
+
+## Rodar localmente
 
 ```bash
+cd app
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre em <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copie `.env.example` para `.env.local`:
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+- `RESEND_API_KEY` — pega em <https://resend.com/api-keys>
+- `RESEND_FROM` — remetente verificado no Resend (ex: `UAITY | Software <contato@software.uaity.com>`)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Sem `RESEND_API_KEY` o formulário fica em **modo dev** (retorna 200 sem enviar email — útil para testar UI).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy (Vercel)
 
-## Deploy on Vercel
+1. `vercel --prod` ou conecta o repo pela UI
+2. Adiciona as env vars no dashboard
+3. Configura domínio `software.uaity.com` em DNS (CNAME → `cname.vercel-dns.com`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Adicionar um novo projeto ao portfólio
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Abra `lib/projects.ts` e adicione um objeto ao array:
+
+```ts
+{
+  slug: "meu-projeto",
+  name: "Meu Projeto",
+  category: "SaaS",        // qualquer string
+  year: 2026,
+  size: "med",             // "wide" | "med" | "sm" — controla grid
+  description: "Descrição curta do projeto...",
+  results: [
+    { value: "95%", label: "uptime" },
+    { value: "10k", label: "usuários" },
+  ],
+  accent: "blue",          // "blue" | "magenta" | "mint" | "coral" | "violet"
+}
+```
+
+O grid dos cases se ajusta automaticamente.
+
+## Estrutura
+
+```
+app/
+├── app/
+│   ├── layout.tsx         # metadata + fonts (Instrument / Jakarta / JetBrains)
+│   ├── page.tsx           # home
+│   ├── globals.css        # design system (glass + mesh + componentes)
+│   └── api/contact/       # form submission → Resend
+├── components/            # todas as seções e UI
+├── lib/
+│   ├── config.ts          # brand, contato, WhatsApp
+│   ├── projects.ts        # ← cases dos projetos
+│   ├── services.ts        # 6 serviços
+│   ├── faqs.ts            # perguntas frequentes
+│   └── problems.ts        # problemas + passos do processo
+└── public/                # assets estáticos (screenshots dos cases vão aqui)
+```
+
+## Design system
+
+- **Fontes:** Instrument Serif (display italic), Plus Jakarta Sans (body), JetBrains Mono (números)
+- **Paleta:** azul UAITY `#2563EB` + magenta, ciano, violeta, coral, mint
+- **Estilo:** Colorful Glass — mesh gradient animado + painéis translúcidos com blur
+- **Tokens:** ver `app/globals.css` (`:root`)
